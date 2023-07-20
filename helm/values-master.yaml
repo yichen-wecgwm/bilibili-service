@@ -35,13 +35,24 @@ env:
         name: java-config
         key: MINIO_SECRET_KEY
 
+#envFrom:
+#  - secretRef:
+#      name:  java-secret
+
+
 volumeMounts:
+  - mountPath: /application/log
+    name: log-volume
   - mountPath: /application/biliup
     name: biliup-rust
   - mountPath: /application/cookies.json
     name: biliup-rust-cookie
 
 volumes:
+  - name: log-volume
+    hostPath:
+      path: /usr/local/log
+      type: Directory
   - name: biliup-rust
     hostPath:
       path: /usr/local/biliup-rust/biliup
@@ -51,9 +62,6 @@ volumes:
       path: /usr/local/biliup-rust/cookies.json
       type: File
 
-#envFrom:
-#  - secretRef:
-#      name:  java-secret
 
 resources:
   limits:
