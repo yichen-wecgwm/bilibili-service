@@ -1,10 +1,10 @@
 package com.wecgcm.bilibili.service.impl;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
-import com.wecgcm.bilibili.exception.handler.BaseExceptionHandler;
 import com.wecgcm.bilibili.service.BiliUpService;
 import com.wecgcm.bilibili.service.BilibiliVideoService;
 import com.wecgcm.bilibili.service.MinioService;
+import com.wecgcm.bilibili.util.LogUtil;
 import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.Metrics;
 import lombok.RequiredArgsConstructor;
@@ -44,7 +44,7 @@ public class BilibiliVideoServiceImpl implements BilibiliVideoService {
                 .thenApplyAsync(minioService::downloadVideo, DOWNLOAD_AND_UPLOAD_THREAD_POOL)
                 .thenAccept(title -> biliUpService.upload(videoId, title))
                 .exceptionally(e -> {
-                    BaseExceptionHandler.recordOnExceptionHandler(Thread.currentThread(), e);
+                    LogUtil.recordOnExceptionHandler(Thread.currentThread(), e);
                     return new CompletableFuture<Void>().resultNow();
                 });
 

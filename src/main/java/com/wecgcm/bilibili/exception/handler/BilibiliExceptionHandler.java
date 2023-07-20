@@ -1,6 +1,7 @@
 package com.wecgcm.bilibili.exception.handler;
 
 import com.wecgcm.bilibili.model.resp.Response;
+import com.wecgcm.bilibili.util.LogUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -11,11 +12,11 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
  */
 @RestControllerAdvice
 @Slf4j
-public class BilibiliExceptionHandler extends BaseExceptionHandler{
+public class BilibiliExceptionHandler {
 
     @ExceptionHandler(Exception.class)
-    public Response<String> lastHandler(Throwable e){
-        recordOnExceptionHandler(null, e);
+    public Response<String> lastHandler(Throwable e) {
+        LogUtil.recordOnExceptionHandler(null, e);
         return Response.from(e);
     }
 
