@@ -34,6 +34,21 @@ env:
       configMapKeyRef:
         name: java-config
         key: MINIO_SECRET_KEY
+  - name: BILI_UP_PATH
+    valueFrom:
+      configMapKeyRef:
+        name: java-config
+        key: BILI_UP_PATH
+  - name: BILI_UP_CONCURRENT_THREAD
+    valueFrom:
+      configMapKeyRef:
+        name: java-config
+        key: BILI_UP_CONCURRENT_THREAD
+  - name: BILI_UP_TAG
+    valueFrom:
+      configMapKeyRef:
+        name: java-config
+        key: BILI_UP_TAG
 
 #envFrom:
 #  - secretRef:
