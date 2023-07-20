@@ -6,7 +6,7 @@ RUN java -Djarmode=layertools -jar application.jar extract
 
 FROM eclipse-temurin:19.0.2_7-jre
 WORKDIR application
-RUN chmod a+w /application && mkdir /application/videos
+RUN chmod a+w /application && mkdir /application/videos && chmod a+w /application/videos
 RUN addgroup --system springboot && adduser --system springboot --ingroup springboot
 USER springboot
 COPY --from=builder application/dependencies/ ./
