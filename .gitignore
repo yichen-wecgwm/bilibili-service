@@ -1,0 +1,7 @@
+.idea
+target/
+src/main/resources/application-dev.yml
+log/
+videos/
+biliup.exe
+cookies.json
