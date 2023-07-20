@@ -19,11 +19,21 @@ server:
 env:
   - name: SPRING_PROFILES_ACTIVE
     value: prod
-  - name: MOCK_API_KEY
+  - name: MINIO_ENDPOINT
     valueFrom:
       configMapKeyRef:
         name: java-config
-        key: MOCK_API_KEY
+        key: MINIO_ENDPOINT
+  - name: MINIO_ACCESS_KEY
+    valueFrom:
+      configMapKeyRef:
+        name: java-config
+        key: MINIO_ACCESS_KEY
+  - name: MINIO_SECRET_KEY
+    valueFrom:
+      configMapKeyRef:
+        name: java-config
+        key: MINIO_SECRET_KEY
 
 volumeMounts:
   - mountPath: /application/biliup
