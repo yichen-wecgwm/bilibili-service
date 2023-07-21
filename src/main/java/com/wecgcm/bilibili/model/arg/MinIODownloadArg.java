@@ -1,11 +1,8 @@
 package com.wecgcm.bilibili.model.arg;
 
 import io.minio.DownloadObjectArgs;
-import io.minio.UploadObjectArgs;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-
-import java.io.IOException;
 
 /**
  * @author ：wecgwm
@@ -25,6 +22,7 @@ public class MinIODownloadArg {
                 .bucket(BUCKET_NAME)
                 .object(videoId + SLASH + videoId + MinIODownloadArg.VIDEO_EXT)
                 .filename(filePath(videoId))
+                .overwrite(true)
                 .build();
     }
 

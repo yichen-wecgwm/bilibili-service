@@ -35,4 +35,4 @@ bili-up:
   concurrent:
     thread: ${BILI_UP_CONCURRENT_THREAD:5}
   # noinspection SpellCheckingInspection
-  tag: ${BILI_UP_TAG:综艺,kpop}
+  tag: ${BILI_UP_TAG:综艺}

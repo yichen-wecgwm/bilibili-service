@@ -16,7 +16,6 @@ import java.util.List;
 public class BiliUpArg {
     private static final String UPLOAD_COMMAND = "upload";
     private static final String SOURCE_OP = "--source";
-    private static final String YOUTUBE_VIDEO_URL_PREFIX = "https://www.youtube.com/watch?v=";
     private static final String COPYRIGHT_OP = "--copyright";
     private static final String COPYRIGHT_REPRODUCED = "2";
     private static final String LINE_OP = "--line";
@@ -38,7 +37,7 @@ public class BiliUpArg {
                 .add(biliUpPath)
                 .add(UPLOAD_COMMAND)
                 .add(SOURCE_OP)
-                .add(YOUTUBE_VIDEO_URL_PREFIX + videoId)
+                .add(videoId.replaceAll("-", ""))
                 .add(COPYRIGHT_OP)
                 .add(COPYRIGHT_REPRODUCED)
                 .add(CATEGORY_OP)
