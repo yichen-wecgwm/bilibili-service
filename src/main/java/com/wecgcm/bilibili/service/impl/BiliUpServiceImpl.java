@@ -25,7 +25,8 @@ public class BiliUpServiceImpl implements BiliUpService {
     private final BiliUpArg biliUpArg;
 
     @Override
-    public void upload(String videoId, String videoTitle) {
+    public String upload(String videoId, String videoTitle) {
+        // todo retry
         List<String> args = biliUpArg.build(videoId, videoTitle);
         Timer.Sample timer = Timer.start();
 
@@ -45,6 +46,7 @@ public class BiliUpServiceImpl implements BiliUpService {
         timer.stop(Timer.builder("yt-dlp-dl")
                 .register(Metrics.globalRegistry));
         log.info("upload done, videoId: {}, title: {}", videoId, videoTitle);
+        return videoId;
     }
 
 }

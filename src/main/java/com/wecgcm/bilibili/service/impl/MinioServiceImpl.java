@@ -1,21 +1,17 @@
 package com.wecgcm.bilibili.service.impl;
 
 import com.wecgcm.bilibili.exception.MinioException;
-import com.wecgcm.bilibili.model.arg.MinIODownloadArg;
-import com.wecgcm.bilibili.model.arg.MinIOGetArg;
 import com.wecgcm.bilibili.service.MinioService;
 import io.micrometer.core.instrument.Metrics;
 import io.micrometer.core.instrument.Timer;
-import io.minio.MinioClient;
+import io.minio.*;
 import io.vavr.control.Try;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 
 /**
  * @author ：wecgwm
@@ -26,31 +22,70 @@ import java.io.InputStreamReader;
 @Service
 public class MinioServiceImpl implements MinioService {
     private final MinioClient minioClient;
-    private final MinIODownloadArg minIODownloadArg;
-    private final MinIOGetArg minIOGetArg;
 
     @Override
-    public String downloadVideo(String videoId) {
+    public InputStream get(String bucket, String object) {
+        return Try.of(() -> GetObjectArgs
+                        .builder()
+                        .bucket(bucket)
+                        .object(object)
+                        .build()
+                )
+                .mapTry(minioClient::getObject)
+                .getOrElseThrow(MinioException::new);
+    }
+
+    @Override
+    public void download(String bucket, String object, String fileName, boolean override) {
         Timer.Sample timer = Timer.start();
 
-        Try.success(videoId)
-                .map(minIODownloadArg::build)
+        DownloadObjectArgs args = DownloadObjectArgs
+                .builder()
+                .bucket(bucket)
+                .object(object)
+                .filename(fileName)
+                .overwrite(override)
+                .build();
+
+        Try.success(args)
                 .andThenTry(minioClient::downloadObject)
-                .recoverWith(e -> Try.failure(new MinioException("minio download: download exception", e)))
                 .getOrElseThrow(MinioException::new);
 
         timer.stop(Timer.builder("minio-download").register(Metrics.globalRegistry));
 
-        log.info("download done, videoId: {}", videoId);
+        log.info("download done, bucket:{}, object: {}, fileName:{}", bucket, object, fileName);
+    }
 
-        InputStream resp = Try.success(videoId)
-                .map(minIOGetArg::build)
-                .mapTry(minioClient::getObject)
+    @Override
+    public ObjectWriteResponse put(String bucket, String object, String text) {
+        PipedOutputStream pipedOutputStream = new PipedOutputStream();
+        PipedInputStream pipedInputStream = Try.success(pipedOutputStream)
+                .mapTry(PipedInputStream::new)
                 .getOrElseThrow(MinioException::new);
-        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(resp));
-        return Try.success(bufferedReader)
-                .mapTry(BufferedReader::readLine)
-                .andFinallyTry(bufferedReader::close)
-                .get();
+        Try.of(() -> new BufferedWriter(new OutputStreamWriter(pipedOutputStream)))
+                .andThenTry(bufferedWriter -> bufferedWriter.write(text))
+                .andThenTry(BufferedWriter::flush)
+                .andThenTry(BufferedWriter::close)
+                .getOrElseThrow(MinioException::new);
+        return Try.of(() -> PutObjectArgs
+                        .builder()
+                        .bucket(bucket)
+                        .object(object)
+                        .stream(pipedInputStream, -1, 10485760)
+                        .build())
+                .mapTry(minioClient::putObject)
+                .andThenTry(resp -> log.info("put done, thread:{}, bucket: {}, object:{}, text:{}, eTag:{}, resp:{}", Thread.currentThread(), bucket, object, text, resp.etag(), resp.object()))
+                .getOrElseThrow(MinioException::new);
+    }
+
+    @Override
+    public void remove(String bucket, String object) {
+        Try.run(() -> minioClient
+                        .removeObject(RemoveObjectArgs
+                                .builder()
+                                .bucket(bucket)
+                                .object(object)
+                                .build()))
+                .getOrElseThrow(MinioException::new);
     }
 }

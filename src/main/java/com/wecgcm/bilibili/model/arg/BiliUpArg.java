@@ -50,7 +50,7 @@ public class BiliUpArg {
                 .add(CONCURRENT_THREAD_CNT)
                 .add(TITLE_OP)
                 .add(title)
-                .add(MinIODownloadArg.OUT_PUT_DIR + videoId + MinIODownloadArg.VIDEO_EXT)
+                .add(MinioArg.Video.fileName(videoId))
                 .build();
         log.info(String.join(" ", ret));
         return ret;

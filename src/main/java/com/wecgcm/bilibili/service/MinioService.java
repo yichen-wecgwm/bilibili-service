@@ -1,11 +1,17 @@
 package com.wecgcm.bilibili.service;
 
 
+import io.minio.ObjectWriteResponse;
+
+import java.io.InputStream;
+
 public interface MinioService {
 
-    /**
-     * @param videoId videoId e.g. JpTqSzm4JOk in www.youtube.com/watch?v=JpTqSzm4JOk
-     * @return videoTitle
-     */
-    String downloadVideo(String videoId);
+    InputStream get(String bucket, String object);
+
+    void download(String bucket, String object, String fileName, boolean override);
+
+    ObjectWriteResponse put(String bucket, String object, String text);
+
+    void remove(String bucket, String object);
 }
