@@ -65,8 +65,6 @@ public class BiliUpServiceImpl implements BiliUpService {
         timer.stop(Timer.builder("yt-dlp-dl")
                 .register(Metrics.globalRegistry));
         log.info("upload done, videoId: {}, title: {}", videoId, videoTitle);
-        //noinspection ResultOfMethodCallIgnored
-        new File(MinioArg.Video.fileName(videoId)).delete();
         return videoId;
     }
 

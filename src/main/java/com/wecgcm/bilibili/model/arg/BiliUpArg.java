@@ -25,6 +25,7 @@ public class BiliUpArg {
     private static final String CATEGORY_ID_VARIETY = "71";
     private static final String TAG_OP = "--tag";
     private static final String TITLE_OP = "--title";
+    private static final String COVER_OP = "--cover";
     @Value("${bili-up.path}")
     private String biliUpPath;
     @Value("${bili-up.concurrent.thread}")
@@ -50,6 +51,8 @@ public class BiliUpArg {
                 .add(CONCURRENT_THREAD_CNT)
                 .add(TITLE_OP)
                 .add(title)
+                .add(COVER_OP)
+                .add(MinioArg.Thumbnail.fileName(videoId))
                 .add(MinioArg.Video.fileName(videoId))
                 .build();
         log.info(String.join(" ", ret));

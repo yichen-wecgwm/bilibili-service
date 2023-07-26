@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -46,7 +47,7 @@ public class BilibiliVideoServiceImpl implements BilibiliVideoService {
     @Override
     public void upload(String videoId) {
         CompletableFuture.completedStage(videoId)
-                .thenApplyAsync(this::downloadVideoAndGetTitle, DOWNLOAD_AND_UPLOAD_THREAD_POOL)
+                .thenApplyAsync(this::downloadAndGetTitle, DOWNLOAD_AND_UPLOAD_THREAD_POOL)
                 .thenApply(title -> biliUpService.upload(videoId, title))
                 .thenAccept(this::clean)
                 .exceptionally(e -> {
@@ -57,8 +58,9 @@ public class BilibiliVideoServiceImpl implements BilibiliVideoService {
     }
 
     @Override
-    public String downloadVideoAndGetTitle(String videoId) {
+    public String downloadAndGetTitle(String videoId) {
         minioService.download(MinioArg.Video.bucket(), MinioArg.Video.object(videoId), MinioArg.Video.fileName(videoId), true);
+        minioService.download(MinioArg.Thumbnail.bucket(), MinioArg.Thumbnail.object(videoId), MinioArg.Thumbnail.fileName(videoId), true);
         InputStream resp = minioService.get(MinioArg.Title.bucket(), MinioArg.Title.object(videoId));
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(resp));
         return Try.success(bufferedReader)
@@ -73,6 +75,10 @@ public class BilibiliVideoServiceImpl implements BilibiliVideoService {
         minioService.remove(MinioArg.Video.bucket(), MinioArg.Video.object(videoId));
         minioService.remove(MinioArg.Lock.bucket(), MinioArg.Lock.object(videoId));
         minioService.remove(MinioArg.Title.bucket(), MinioArg.Title.object(videoId));
+        //noinspection ResultOfMethodCallIgnored
+        new File(MinioArg.Video.fileName(videoId)).delete();
+        //noinspection ResultOfMethodCallIgnored
+        new File(MinioArg.Thumbnail.fileName(videoId)).delete();
     }
 
 }

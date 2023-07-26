@@ -7,7 +7,7 @@ public interface BilibiliVideoService {
      * @param videoId videoId e.g. JpTqSzm4JOk in www.youtube.com/watch?v=JpTqSzm4JOk
      * @return videoTitle
      */
-    String downloadVideoAndGetTitle(String videoId);
+    String downloadAndGetTitle(String videoId);
 
     void clean(String videoId);
 }

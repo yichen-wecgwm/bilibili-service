@@ -6,8 +6,9 @@ package com.wecgcm.bilibili.model.arg;
  */
 public class MinioArg {
     public static final String SLASH = "/";
-    public static final String VIDEO_EXT = ".webm";
-    public static final String OUT_PUT_DIR = "videos" + SLASH;
+    private static final String VIDEO_EXT = ".webm";
+    private static final String THUMBNAIL_EXT = ".webp";
+    private static final String OUT_PUT_DIR = "videos" + SLASH;
     private static final String VIDEO_BUCKET_NAME = "videos";
     private static final String TITLE = "title";
     private static final String ARCHIVE = "archive";
@@ -23,7 +24,21 @@ public class MinioArg {
         }
 
         public static String fileName(String videoId){
-            return MinioArg.OUT_PUT_DIR + videoId + MinioArg.VIDEO_EXT;
+            return MinioArg.OUT_PUT_DIR + videoId + VIDEO_EXT;
+        }
+    }
+
+    public static class Thumbnail {
+        public static String object(String videoId) {
+            return videoId + SLASH + videoId + THUMBNAIL_EXT;
+        }
+
+        public static String bucket() {
+            return VIDEO_BUCKET_NAME;
+        }
+
+        public static String fileName(String videoId){
+            return MinioArg.OUT_PUT_DIR + videoId + THUMBNAIL_EXT;
         }
     }
 
