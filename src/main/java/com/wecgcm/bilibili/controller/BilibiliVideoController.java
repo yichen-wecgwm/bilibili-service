@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+
 /**
  * @author ：wecgwm
  * @date ：2023/07/19 1:04
@@ -21,7 +23,7 @@ public class BilibiliVideoController {
     private final BilibiliVideoService bilibiliVideoService;
 
     @PostMapping("/upload")
-    public Response<String> download(@RequestBody BilibiliUploadRequest request){
+    public Response<String> download(@RequestBody @Valid BilibiliUploadRequest request){
         bilibiliVideoService.upload(request.getVideoId());
         return Response.ok();
     }

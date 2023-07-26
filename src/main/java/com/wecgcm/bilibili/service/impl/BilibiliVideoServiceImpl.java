@@ -51,7 +51,7 @@ public class BilibiliVideoServiceImpl implements BilibiliVideoService {
                 .thenAccept(this::clean)
                 .exceptionally(e -> {
                     LogUtil.recordOnExceptionHandler(Thread.currentThread(), e);
-                    return new CompletableFuture<Void>().resultNow();
+                    return null;
                 });
 
     }

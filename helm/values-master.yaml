@@ -34,6 +34,16 @@ env:
       configMapKeyRef:
         name: java-config
         key: MINIO_SECRET_KEY
+  - name: BAIDU_TRANS_APP_ID
+    valueFrom:
+      configMapKeyRef:
+        name: java-config
+        key: BAIDU_TRANS_APP_ID
+  - name: BAIDU_TRANS_KEY
+    valueFrom:
+      configMapKeyRef:
+        name: java-config
+        key: BAIDU_TRANS_KEY
   - name: BILI_UP_PATH
     valueFrom:
       configMapKeyRef:

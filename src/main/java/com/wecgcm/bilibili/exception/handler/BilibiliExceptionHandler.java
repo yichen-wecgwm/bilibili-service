@@ -16,7 +16,7 @@ public class BilibiliExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public Response<String> lastHandler(Throwable e) {
-        LogUtil.recordOnExceptionHandler(null, e);
+        LogUtil.recordOnExceptionHandler(Thread.currentThread(), e);
         return Response.from(e);
     }
 

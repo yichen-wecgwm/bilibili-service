@@ -20,6 +20,8 @@
         <lombok.version>1.18.24</lombok.version>
         <minio.version>8.5.4</minio.version>
         <okhttp.version>4.11.0</okhttp.version>
+        <vavr.version>1.0.0-alpha-4</vavr.version>
+        <hutool.version>5.8.5</hutool.version>
     </properties>
 
     <dependencies>
@@ -30,6 +32,10 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -63,7 +69,12 @@
         <dependency>
             <groupId>io.vavr</groupId>
             <artifactId>vavr</artifactId>
-            <version>1.0.0-alpha-4</version>
+            <version>${vavr.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-all</artifactId>
+            <version>${hutool.version}</version>
         </dependency>
     </dependencies>
 
