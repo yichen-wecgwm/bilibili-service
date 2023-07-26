@@ -41,3 +41,4 @@ bili-up:
     thread: ${BILI_UP_CONCURRENT_THREAD:5}
   # noinspection SpellCheckingInspection
   tag: ${BILI_UP_TAG:综艺}
+  title-prefix: ${BILI_UP_TITLE_PREFIX:[生肉] }

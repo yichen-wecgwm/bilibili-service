@@ -59,6 +59,11 @@ env:
       configMapKeyRef:
         name: java-config
         key: BILI_UP_TAG
+  - name: BILI_UP_TITLE_PREFIX
+    valueFrom:
+      configMapKeyRef:
+        name: java-config
+        key: BILI_UP_TITLE_PREFIX
 
 #envFrom:
 #  - secretRef:

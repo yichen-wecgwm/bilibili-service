@@ -15,6 +15,7 @@ import io.vavr.control.Try;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -35,6 +36,9 @@ public class BiliUpServiceImpl implements BiliUpService {
     // 中英文空格和常见标点符号
     private static final String TITLE_REGEX = "[\u4E00-\u9FFF\\w\\s!?.,]+";
     private static final Pattern TITLE_PATTERN = Pattern.compile(TITLE_REGEX);
+
+    @Value("${bili-up.title-prefix}")
+    private String titlePrefix;
 
     @Override
     public String upload(String videoId, String videoTitle) {
@@ -72,7 +76,7 @@ public class BiliUpServiceImpl implements BiliUpService {
         videoTitle = videoTitle.chars().mapToObj(__ -> (char) __).filter(c -> c != CharPool.UNDERLINE).collect(StringBuffer::new, StringBuffer::append, StringBuffer::append).toString();
         // 删除多余空格
         videoTitle = BLANK_PATTERN.matcher(videoTitle).replaceAll(String.valueOf(CharPool.SPACE));
-        return videoTitle;
+        return CharPool.DOUBLE_QUOTES + titlePrefix + videoTitle + CharPool.DOUBLE_QUOTES;
     }
 
 }
