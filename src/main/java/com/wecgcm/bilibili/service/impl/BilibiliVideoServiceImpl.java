@@ -59,7 +59,7 @@ public class BilibiliVideoServiceImpl implements BilibiliVideoService {
     @Override
     public String downloadVideoAndGetTitle(String videoId) {
         minioService.download(MinioArg.Video.bucket(), MinioArg.Video.object(videoId), MinioArg.Video.fileName(videoId), true);
-        InputStream resp = minioService.get(MinioArg.Video.bucket(), MinioArg.Video.object(videoId));
+        InputStream resp = minioService.get(MinioArg.Title.bucket(), MinioArg.Title.object(videoId));
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(resp));
         return Try.success(bufferedReader)
                 .mapTry(BufferedReader::readLine)
