@@ -51,8 +51,6 @@ public class BiliUpArg {
                 .add(CONCURRENT_THREAD_CNT)
                 .add(TITLE_OP)
                 .add(title)
-                .add(COVER_OP)
-                .add(MinioArg.Thumbnail.fileName(videoId))
                 .add(MinioArg.Video.fileName(videoId))
                 .build();
         log.info(String.join(" ", ret));
