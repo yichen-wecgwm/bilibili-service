@@ -5,6 +5,7 @@ import cn.hutool.core.text.CharPool;
 import cn.hutool.core.util.ReUtil;
 import com.wecgcm.bilibili.exception.ProcessException;
 import com.wecgcm.bilibili.model.arg.BiliUpArg;
+import com.wecgcm.bilibili.model.arg.MinioArg;
 import com.wecgcm.bilibili.model.resp.BaiduTransResp;
 import com.wecgcm.bilibili.service.BiliUpService;
 import com.wecgcm.bilibili.service.TranslateService;
@@ -18,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -63,6 +65,8 @@ public class BiliUpServiceImpl implements BiliUpService {
         timer.stop(Timer.builder("yt-dlp-dl")
                 .register(Metrics.globalRegistry));
         log.info("upload done, videoId: {}, title: {}", videoId, videoTitle);
+        //noinspection ResultOfMethodCallIgnored
+        new File(MinioArg.Video.fileName(videoId)).delete();
         return videoId;
     }
 
