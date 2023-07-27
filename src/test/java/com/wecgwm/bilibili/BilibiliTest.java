@@ -32,4 +32,9 @@ public class BilibiliTest {
         biliUpService.upload("123", "[아이유의 팔레트\uD83C\uDFA8] 뉴진스의 컬러 스위치요 (With 뉴진스) Ep.21");
     }
 
+    @Test
+    public void uploadTest(){
+        biliUpService.upload("FvD8-DH04FY", "123 5");
+    }
+
 }

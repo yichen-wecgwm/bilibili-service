@@ -7,7 +7,7 @@ package com.wecgcm.bilibili.model.arg;
 public class MinioArg {
     public static final String SLASH = "/";
     private static final String VIDEO_EXT = ".webm";
-    private static final String THUMBNAIL_EXT = ".webp";
+    private static final String THUMBNAIL_EXT = ".png";
     private static final String OUT_PUT_DIR = "videos" + SLASH;
     private static final String VIDEO_BUCKET_NAME = "videos";
     private static final String TITLE = "title";
