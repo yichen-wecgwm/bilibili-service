@@ -73,6 +73,7 @@ public class BilibiliVideoServiceImpl implements BilibiliVideoService {
     public void clean(String videoId) {
         minioService.put(MinioArg.Archive.bucket(), MinioArg.Archive.object(videoId), Thread.currentThread().getName());
         minioService.remove(MinioArg.Video.bucket(), MinioArg.Video.object(videoId));
+        minioService.remove(MinioArg.Thumbnail.bucket(), MinioArg.Thumbnail.object(videoId));
         minioService.remove(MinioArg.Lock.bucket(), MinioArg.Lock.object(videoId));
         minioService.remove(MinioArg.Title.bucket(), MinioArg.Title.object(videoId));
         //noinspection ResultOfMethodCallIgnored
