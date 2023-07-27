@@ -33,12 +33,15 @@ import java.util.regex.Pattern;
 public class BiliUpServiceImpl implements BiliUpService {
     private final BiliUpArg biliUpArg;
     private final TranslateService translateService;
+    private static final String DEV = "dev";
     private static final String DELIMITER = "";
     private static final Pattern BLANK_PATTERN = Pattern.compile(" +");
     // 中英文空格和常见标点符号
     private static final String TITLE_REGEX = "[\u4E00-\u9FFF\\w\\s!?.,]+";
     private static final Pattern TITLE_PATTERN = Pattern.compile(TITLE_REGEX);
 
+    @Value("${spring.profiles.active}")
+    private String env;
     @Value("${bili-up.title-prefix}")
     private String titlePrefix;
 
@@ -76,9 +79,12 @@ public class BiliUpServiceImpl implements BiliUpService {
         }
         // 删除下划线
         videoTitle = videoTitle.chars().mapToObj(__ -> (char) __).filter(c -> c != CharPool.UNDERLINE).collect(StringBuffer::new, StringBuffer::append, StringBuffer::append).toString();
-        // 删除多余空格
-        videoTitle = BLANK_PATTERN.matcher(videoTitle).replaceAll(String.valueOf(CharPool.SPACE));
-        return CharPool.DOUBLE_QUOTES + titlePrefix + videoTitle + CharPool.DOUBLE_QUOTES;
+        // 删除多余空格, 添加前缀
+        videoTitle = titlePrefix + BLANK_PATTERN.matcher(videoTitle).replaceAll(String.valueOf(CharPool.SPACE));
+        if (DEV.equals(env)) {
+            videoTitle = CharPool.DOUBLE_QUOTES + videoTitle + CharPool.DOUBLE_QUOTES;
+        }
+        return videoTitle;
     }
 
 }
