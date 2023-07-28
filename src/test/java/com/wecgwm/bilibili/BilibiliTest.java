@@ -1,8 +1,7 @@
 package com.wecgwm.bilibili;
 
-import com.wecgcm.bilibili.BilibiliServiceApplication;
-import com.wecgcm.bilibili.service.BiliUpService;
-import com.wecgcm.bilibili.service.TranslateService;
+import com.wecgwm.bilibili.service.BiliUpService;
+import com.wecgwm.bilibili.service.TranslateService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;

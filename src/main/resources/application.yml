@@ -22,6 +22,11 @@ management:
 logging:
   file:
     path: log/${spring.application.name}/${POD_NAME:local_dev}
+  level:
+    com:
+      # noinspection SpellCheckingInspection
+      wecgwm:
+        bilibili: ${BILIBILI_LOG_LEVEL:info}
 
 baidu:
   trans:
