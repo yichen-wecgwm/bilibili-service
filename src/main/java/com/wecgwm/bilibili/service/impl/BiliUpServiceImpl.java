@@ -3,8 +3,11 @@ package com.wecgwm.bilibili.service.impl;
 import cn.hutool.core.lang.Validator;
 import cn.hutool.core.text.CharPool;
 import cn.hutool.core.util.ReUtil;
+import com.wecgwm.bilibili.config.ObjectMapperSingleton;
 import com.wecgwm.bilibili.exception.ProcessException;
-import com.wecgwm.bilibili.model.arg.BiliUpArg;
+import com.wecgwm.bilibili.model.arg.biliup.BiliUpArg;
+import com.wecgwm.bilibili.model.dto.Tag;
+import com.wecgwm.bilibili.model.dto.VideoInfoDto;
 import com.wecgwm.bilibili.model.resp.BaiduTransResp;
 import com.wecgwm.bilibili.service.BiliUpService;
 import com.wecgwm.bilibili.service.TranslateService;
@@ -13,10 +16,12 @@ import io.micrometer.core.instrument.Metrics;
 import io.micrometer.core.instrument.Timer;
 import io.vavr.control.Try;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 import java.util.regex.Pattern;
@@ -43,11 +48,16 @@ public class BiliUpServiceImpl implements BiliUpService {
     @Value("${bili-up.title-prefix}")
     private String titlePrefix;
 
+    @SneakyThrows
     @Override
-    public String upload(String videoId, String videoTitle) {
-        videoTitle = processTitle(videoTitle);
+    public String upload(String videoId, String videoInfoJson) {
+        VideoInfoDto videoInfo = ObjectMapperSingleton.INSTANCE.readValue(videoInfoJson, VideoInfoDto.class);
+        videoInfo.setTitle(processTitle(videoInfo.getTitle()));
+        if (!CollectionUtils.isEmpty(videoInfo.getExt())) {
+            videoInfo.setTag(ObjectMapperSingleton.INSTANCE.readValue(videoInfo.getExt().get(0), Tag.class));
+        }
         // todo retry
-        List<String> args = biliUpArg.build(videoId, videoTitle);
+        List<String> args = biliUpArg.build(videoId, videoInfo);
         Timer.Sample timer = Timer.start();
 
         ProcessBuilder processBuilder = new ProcessBuilder(args)
@@ -65,7 +75,7 @@ public class BiliUpServiceImpl implements BiliUpService {
 
         timer.stop(Timer.builder("yt-dlp-dl")
                 .register(Metrics.globalRegistry));
-        log.info("upload done, videoId: {}, title: {}", videoId, videoTitle);
+        log.info("upload done, videoId: {}, title: {}", videoId, videoInfo);
         return videoId;
     }
 

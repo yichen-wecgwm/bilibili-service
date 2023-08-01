@@ -1,7 +1,7 @@
 package com.wecgwm.bilibili.service.impl;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
-import com.wecgwm.bilibili.model.arg.MinioArg;
+import com.wecgwm.bilibili.model.arg.minio.*;
 import com.wecgwm.bilibili.service.BiliUpService;
 import com.wecgwm.bilibili.service.BilibiliVideoService;
 import com.wecgwm.bilibili.service.MinioService;
@@ -17,10 +17,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 /**
  * @author ：wecgwm
@@ -45,23 +42,22 @@ public class BilibiliVideoServiceImpl implements BilibiliVideoService {
     }
 
     @Override
-    public void upload(String videoId) {
-        CompletableFuture.completedStage(videoId)
-                .thenApplyAsync(this::downloadAndGetTitle, DOWNLOAD_AND_UPLOAD_THREAD_POOL)
-                .thenApply(title -> biliUpService.upload(videoId, title))
+    public CompletionStage<Void> upload(String videoId) {
+        return CompletableFuture.completedStage(videoId)
+                .thenApplyAsync(this::downloadVideoAndInfo, DOWNLOAD_AND_UPLOAD_THREAD_POOL)
+                .thenApply(videoInfoJson -> biliUpService.upload(videoId, videoInfoJson))
                 .thenAccept(this::clean)
                 .exceptionally(e -> {
                     LogUtil.recordOnExceptionHandler(Thread.currentThread(), e);
                     return null;
                 });
-
     }
 
     @Override
-    public String downloadAndGetTitle(String videoId) {
-        minioService.download(MinioArg.Video.bucket(), MinioArg.Video.object(videoId), MinioArg.Video.fileName(videoId), true);
-        minioService.download(MinioArg.Thumbnail.bucket(), MinioArg.Thumbnail.object(videoId), MinioArg.Thumbnail.fileName(videoId), true);
-        InputStream resp = minioService.get(MinioArg.Title.bucket(), MinioArg.Title.object(videoId));
+    public String downloadVideoAndInfo(String videoId) {
+        minioService.download(MinioVideoArg.bucket(), MinioVideoArg.object(videoId), MinioVideoArg.fileName(videoId), true);
+        minioService.download(MinioThumbnailArg.bucket(), MinioThumbnailArg.object(videoId), MinioThumbnailArg.fileName(videoId), true);
+        InputStream resp = minioService.get(MinioVideoInfoArg.bucket(), MinioVideoInfoArg.object(videoId));
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(resp));
         return Try.success(bufferedReader)
                 .mapTry(BufferedReader::readLine)
@@ -71,15 +67,15 @@ public class BilibiliVideoServiceImpl implements BilibiliVideoService {
 
     @Override
     public void clean(String videoId) {
-        minioService.put(MinioArg.Archive.bucket(), MinioArg.Archive.object(videoId), Thread.currentThread().getName());
-        minioService.remove(MinioArg.Video.bucket(), MinioArg.Video.object(videoId));
-        minioService.remove(MinioArg.Thumbnail.bucket(), MinioArg.Thumbnail.object(videoId));
-        minioService.remove(MinioArg.Lock.bucket(), MinioArg.Lock.object(videoId));
-        minioService.remove(MinioArg.Title.bucket(), MinioArg.Title.object(videoId));
+        minioService.put(MinioArchiveArg.bucket(), MinioArchiveArg.object(videoId), Thread.currentThread().getName());
+        minioService.remove(MinioVideoArg.bucket(), MinioVideoArg.object(videoId));
+        minioService.remove(MinioThumbnailArg.bucket(), MinioThumbnailArg.object(videoId));
+        minioService.remove(MinioLockArg.bucket(), MinioLockArg.object(videoId));
+        minioService.remove(MinioVideoInfoArg.bucket(), MinioVideoInfoArg.object(videoId));
         //noinspection ResultOfMethodCallIgnored
-        new File(MinioArg.Video.fileName(videoId)).delete();
+        new File(MinioVideoArg.fileName(videoId)).delete();
         //noinspection ResultOfMethodCallIgnored
-        new File(MinioArg.Thumbnail.fileName(videoId)).delete();
+        new File(MinioThumbnailArg.fileName(videoId)).delete();
     }
 
 }
