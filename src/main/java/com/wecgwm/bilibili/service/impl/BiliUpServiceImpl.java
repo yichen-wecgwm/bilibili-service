@@ -73,7 +73,7 @@ public class BiliUpServiceImpl implements BiliUpService {
                 .andFinally(process::destroy)
                 .getOrElseThrow(ProcessException::new);
 
-        timer.stop(Timer.builder("yt-dlp-dl")
+        timer.stop(Timer.builder("bili-up-upload")
                 .register(Metrics.globalRegistry));
         log.info("upload done, videoId: {}, title: {}", videoId, videoInfo);
         return videoId;
