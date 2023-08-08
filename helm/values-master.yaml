@@ -19,6 +19,11 @@ server:
 env:
   - name: SPRING_PROFILES_ACTIVE
     value: prod
+  - name: BILIBILI_LOG_LEVEL
+    valueFrom:
+      configMapKeyRef:
+        name: java-config
+        key: BILIBILI_LOG_LEVEL
   - name: MINIO_ENDPOINT
     valueFrom:
       configMapKeyRef:
@@ -64,11 +69,11 @@ env:
       configMapKeyRef:
         name: java-config
         key: BILI_UP_TITLE_PREFIX
-  - name: BILIBILI_LOG_LEVEL
+  - name: BILI_UP_LINE
     valueFrom:
       configMapKeyRef:
         name: java-config
-        key: BILIBILI_LOG_LEVEL
+        key: BILI_UP_LINE
 
 #envFrom:
 #  - secretRef:

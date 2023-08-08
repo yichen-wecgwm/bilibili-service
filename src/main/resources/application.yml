@@ -47,3 +47,4 @@ bili-up:
   # noinspection SpellCheckingInspection
   tag: ${BILI_UP_TAG:综艺}
   title-prefix: ${BILI_UP_TITLE_PREFIX:[生肉] }
+  line: ${BILI_UP_LINE:bda2}

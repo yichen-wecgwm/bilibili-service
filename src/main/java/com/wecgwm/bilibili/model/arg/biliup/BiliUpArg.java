@@ -28,7 +28,6 @@ public class BiliUpArg {
     private static final String COPYRIGHT_OP = "--copyright";
     private static final String COPYRIGHT_REPRODUCED = "2";
     private static final String LINE_OP = "--line";
-    private static final String LINE_BAIDU = "bda2";
     private static final String CONCURRENT_OP = "--limit";
     private static final String CATEGORY_OP = "--tid";
     private static final String CATEGORY_ID_VARIETY = "71";
@@ -37,6 +36,8 @@ public class BiliUpArg {
     private static final String COVER_OP = "--cover";
     @Value("${bili-up.path}")
     private String biliUpPath;
+    @Value("${bili-up.line}")
+    public String LINE;
     @Value("${bili-up.concurrent.thread}")
     public String CONCURRENT_THREAD_CNT;
     @Value("${bili-up.tag}")
@@ -56,7 +57,7 @@ public class BiliUpArg {
                 .add(TAG_OP)
                 .add(tag)
                 .add(LINE_OP)
-                .add(LINE_BAIDU)
+                .add(LINE)
                 .add(CONCURRENT_OP)
                 .add(CONCURRENT_THREAD_CNT)
                 .add(TITLE_OP)
